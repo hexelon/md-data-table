@@ -552,12 +552,17 @@ function mdTableRow($mdTable, $timeout) {
         if(scope.isDisabled()) {
           return;
         }
-        
+
         if(scope.isSelected(item)) {
-          tableCtrl.selectedItems.splice(tableCtrl.selectedItems.indexOf(item), 1);
+          if(event.target.classList.contains("md-ink-ripple")) {
+            tableCtrl.selectedItems.splice(tableCtrl.selectedItems.indexOf(item), 1);
+          }
         } else {
-          tableCtrl.selectedItems.push(item);
-          scope.$eval(onSelectClick);
+          if(event.target.classList.contains("md-ink-ripple")) {
+            tableCtrl.selectedItems.push(item);
+          } else {
+            scope.$eval(onSelectClick);
+          }
         }
       };
     }
