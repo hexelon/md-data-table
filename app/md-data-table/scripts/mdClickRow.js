@@ -37,4 +37,4 @@ function mdClickRow($mdTable) {
   };
 }
 
-mdSelectRow.$inject = ['$mdTable'];
+mdClickRow.$inject = ['$mdTable'];
