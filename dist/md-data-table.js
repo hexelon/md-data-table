@@ -39,7 +39,7 @@ function mdClickRow($mdTable) {
   };
 }
 
-mdSelectRow.$inject = ['$mdTable'];
+mdClickRow.$inject = ['$mdTable'];
 
 
 angular.module('md.data.table').directive('mdColumnHeader', mdColumnHeader);
