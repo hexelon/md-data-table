@@ -1,5 +1,47 @@
 angular.module('md.data.table', ['md.table.templates']);
 
+angular.module('md.data.table').directive('mdClickRow', mdClickRow);
+
+function mdClickRow($mdTable) {
+  'use strict';
+  
+  function template(tElement, tAttrs) {
+    var ngRepeat = $mdTable.parse(tAttrs.ngRepeat);
+    var onSelectClick = tAttrs.onSelectClick;
+
+    if(angular.isDefined(tAttrs.mdAutoSelect)) {
+      tAttrs.$set('ngClick', 'toggleRow(' + ngRepeat.item + ', "' + onSelectClick + '", $event )');
+    }
+  }
+  
+  function postLink(scope, element, attrs, tableCtrl) {
+    var model = {};
+    var ngRepeat = $mdTable.parse(attrs.ngRepeat);
+    
+    if(!angular.isFunction(scope.isDisabled)) {
+      scope.isDisabled = function () { return false; };
+    }
+    
+    tableCtrl.isDisabled = function (item) {
+      model[ngRepeat.item] = item;
+      return scope.isDisabled(model);
+    };
+  }
+  
+  return {
+    link: postLink,
+    priority: 1001,
+    require: '^^mdDataTable',
+    scope: {
+      isDisabled: '&?mdDisableSelect'
+    },
+    template: template
+  };
+}
+
+mdSelectRow.$inject = ['$mdTable'];
+
+
 angular.module('md.data.table').directive('mdColumnHeader', mdColumnHeader);
 
 function mdColumnHeader($compile, $interpolate, $timeout) {
@@ -131,6 +173,10 @@ function mdDataTable($mdTable) {
     
     if(tAttrs.mdRowSelect && ngRepeat) {
       rows.attr('md-select-row', '');
+    }
+
+    if(tAttrs.mdRowClick != undefined && ngRepeat) {
+      rows.attr('md-click-row', '');
     }
     
     if(tAttrs.mdRowSelect && !ngRepeat) {
@@ -564,6 +610,24 @@ function mdTableRow($mdTable, $timeout) {
             scope.$eval(onSelectClick);
           }
         }
+      };
+    }
+
+    if(angular.isDefined(attrs.mdClickRow)) {
+      scope.mdClasses = tableCtrl.classes;
+
+      scope.isDisabled = function() {
+        return scope.$eval(attrs.mdDisableSelect);
+      };
+
+      scope.toggleRow = function (item, onSelectClick, event) {
+        event.stopPropagation();
+
+        if(scope.isDisabled()) {
+          return;
+        }
+
+        scope.$eval(onSelectClick);
       };
     }
     

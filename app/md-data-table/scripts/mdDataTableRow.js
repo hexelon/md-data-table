@@ -36,6 +36,24 @@ function mdTableRow($mdTable, $timeout) {
         }
       };
     }
+
+    if(angular.isDefined(attrs.mdClickRow)) {
+      scope.mdClasses = tableCtrl.classes;
+
+      scope.isDisabled = function() {
+        return scope.$eval(attrs.mdDisableSelect);
+      };
+
+      scope.toggleRow = function (item, onSelectClick, event) {
+        event.stopPropagation();
+
+        if(scope.isDisabled()) {
+          return;
+        }
+
+        scope.$eval(onSelectClick);
+      };
+    }
     
     if(attrs.ngRepeat) {
       if(scope.$last) {

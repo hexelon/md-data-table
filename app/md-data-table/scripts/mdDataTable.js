@@ -39,6 +39,10 @@ function mdDataTable($mdTable) {
     if(tAttrs.mdRowSelect && ngRepeat) {
       rows.attr('md-select-row', '');
     }
+
+    if(tAttrs.mdRowClick != undefined && ngRepeat) {
+      rows.attr('md-click-row', '');
+    }
     
     if(tAttrs.mdRowSelect && !ngRepeat) {
       console.warn('Please use ngRepeat to enable row selection.');
